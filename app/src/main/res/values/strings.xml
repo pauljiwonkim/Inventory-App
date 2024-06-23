@@ -11,10 +11,19 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="add_category">Add Category</string>"
-    <string name="add_item">Add Item</string>"
-    <string name="edit_item">Add Item</string>"
+    <string name="add_item_name">Item Name</string>"
+    <string name="add_item_desc">Item Description</string>"
+    <string name="add_item_quantity">Item Quantity</string>"
+    <string name="add_item_price">Item Price</string>"
     <string name="inventory_label">Inventory Items</string>
     <string name="save_button">Save</string>
+    <string name="add_item_button">Add Item</string>
+    <string name="add_item_title">Add Item</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="edit_item_name">Item Name</string>
+    <string name="edit_item_desc">Item Description</string>
+    <string name="edit_item_quantity">Item Quantity</string>
+    <string name="edit_item_price">Item Price</string>
     <string name="item_added">Added Item</string>
     <string name="item_updated">Updated Item</string>
     <string name="item_deleted">Deleted Item</string>
@@ -22,8 +31,12 @@
     <string name="category_updated">Updated Category</string>
     <string name="category_deleted">Deleted Category</string>
     <string name="category_notFound">Category not found</string>
-
-
+    <string name="user_nameSign">"Enter your username and password"</string>
+    <string name="username_hint">"Enter your username"</string>
+    <string name="password_hint">"Enter your password"</string>
+    <string name="email_hint">"Enter your email"</string>
+    <string name="log_successful">Logged in Successfully!</string>
+    <string name="sign_up">Sign Up!</string>
     <string name="save">Save"</string>
     <string name="cancel">Cancel"</string>
     <string name="delete">Delete"</string>
@@ -38,7 +51,9 @@
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="add">Add</string>
-
     <string name="update">Update</string>
+    <string name="add_item_category">Item Category</string>
+    <string name="edit_item_category">Item Category</string>
+
 
 </resources>

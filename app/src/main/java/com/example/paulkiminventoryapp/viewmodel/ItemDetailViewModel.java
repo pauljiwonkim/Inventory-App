@@ -1,5 +1,7 @@
 package com.example.paulkiminventoryapp.viewmodel;
 
+import static java.lang.Long.valueOf;
+
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,16 +13,16 @@ import com.example.paulkiminventoryapp.repo.InventoryRepository;
 
 import java.util.List;
 
-public class InventoryDetailViewModel extends AndroidViewModel {
+public class ItemDetailViewModel extends AndroidViewModel {
 
     private InventoryRepository mInventoryRepo;
     private final MutableLiveData<Long> itemIdLiveData = new MutableLiveData<>();
 
-    public LiveData<Items> itemsLiveData =
+    public LiveData<Items>itemsLiveData =
             Transformations.switchMap(itemIdLiveData, itemId ->
-                mInventoryRepo.getItem(itemId));
+                mInventoryRepo.getItem((itemId)));
 
-    public InventoryDetailViewModel(@NonNull Application application) {
+    public ItemDetailViewModel(@NonNull Application application) {
         super(application);
         mInventoryRepo = InventoryRepository.getInstance(application.getApplicationContext());
     }

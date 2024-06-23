@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 public class InventoryRepository {
 
     private static InventoryRepository mInventoryRepo;
+    private InventoryDatabase mInventoryDatabase;
     private final List<Categories> mCategoriesList;
     private final HashMap<Long, List<Items>> mInventoryMap;
     private final MutableLiveData<List<Categories>> mCategoriesLiveData;
@@ -46,21 +47,6 @@ public class InventoryRepository {
         category3.setId(3);
         addCategory(category3);
 
-        // Add inventory items to each category
-        Items item1 = new Items("Items Item 1");
-        item1.setId(1);
-        item1.setCategoryId(1); // Link to Category 1
-        addItem(item1);
-
-        Items item2 = new Items("Items Item 2");
-        item2.setId(2);
-        item2.setCategoryId(2); // Link to Category 2
-        addItem(item2);
-
-        Items item3 = new Items("Items Item 3");
-        item3.setId(3);
-        item3.setCategoryId(3); // Link to Category 3
-        addItem(item3);
     }
 
     public void addCategory(Categories category) {
@@ -113,7 +99,9 @@ public class InventoryRepository {
                 Items currentItem = itemList.get(i);
                 if (currentItem.getId() == updatedItem.getId()) {
                     // Update item details with the new values
-                    currentItem.setText(updatedItem.getText());
+                    currentItem.setItemName(updatedItem.getItemName());
+                    currentItem.setItemDesc(updatedItem.getItemDesc());
+                    currentItem.setItemQuantity(updatedItem.getItemQuantity());
                     // Replace the item in the list
                     itemList.set(i, currentItem);
                     break;
@@ -122,20 +110,33 @@ public class InventoryRepository {
         }
     }
 
+    public LiveData<List<Items>> getItems(long categoryId) {
+        MutableLiveData<List<Items>> itemsLiveData = new MutableLiveData<>();
+        List<Items> itemList = mInventoryMap.get(categoryId);
+        if (itemList == null) {
+            itemList = new ArrayList<>(); // Initialize an empty list if none found
+        }
+        itemsLiveData.setValue(itemList);
+        return itemsLiveData;
+    }
+
+
+
     public LiveData<Items> getItem(long itemId) {
-        MutableLiveData<Items> liveData = new MutableLiveData<>();
-        for (List<Items> items : mInventoryMap.values()) {
-            for (Items item : items) {
+        MutableLiveData<Items> itemLiveData = new MutableLiveData<>();
+        // Iterate through all categories to find the item
+        for (List<Items> itemList : mInventoryMap.values()) {
+            for (Items item : itemList) {
                 if (item.getId() == itemId) {
-                    liveData.setValue(item);
-                    return liveData;
+                    itemLiveData.setValue(item);
+                    return itemLiveData;
                 }
             }
         }
-        return null;
+        itemLiveData.setValue(null); // Return null if item is not found
+        return itemLiveData;
     }
 
-    public List<Items> getItems(long categoryId) {
-        return mInventoryMap.get(categoryId);
-    }
+
+
 }

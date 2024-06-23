@@ -1,7 +1,10 @@
 package com.example.paulkiminventoryapp;
 
 import com.example.paulkiminventoryapp.model.Categories;
+import com.example.paulkiminventoryapp.repo.InventoryDatabase;
 import com.example.paulkiminventoryapp.viewmodel.CategoryListViewModel;
+import com.example.paulkiminventoryapp.repo.InventoryRepository;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.graphics.Color;
 
+
 public class CategoryActivity extends AppCompatActivity
         implements CategoryDialogFragment.onCategoryEnteredListener {
 
@@ -30,6 +35,8 @@ public class CategoryActivity extends AppCompatActivity
     private int[] mCategoryColors;
     private CategoryListViewModel mCategoryListViewModel;
     private Categories mSelectedCategory;
+    private InventoryDatabase mInventoryDatabase;
+    private InventoryRepository mInventoryRepo;
     private int mSelectedCategoryPosition = RecyclerView.NO_POSITION;
     private ActionMode mActionMode = null;
 
@@ -38,11 +45,9 @@ public class CategoryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        mCategoryListViewModel = new CategoryListViewModel(getApplication());
-
         mCategoryColors = getResources().getIntArray(R.array.categoryColors);
 
-        findViewById(R.id.add_category_button).setOnClickListener(view -> addCategoryClick());
+        findViewById(R.id.add_category_button).setOnClickListener(view -> showCategoryDialog    ());
 
         // Create 2 grid layout columns
         mRecyclerView = findViewById(R.id.category_recycler_view);
@@ -75,19 +80,16 @@ public class CategoryActivity extends AppCompatActivity
             // Stop updateUI() from being called
             mLoadCategoryList = false;
 
-            //mCategoryListViewModel.addCategory(category);
+            mCategoryListViewModel.addCategory(category);
             mCategoryAdapter.addCategory(category);
-
             Toast.makeText(this, "Added: " + categoryText, Toast.LENGTH_SHORT).show();
-
-            // Resume updates after adding the category
-            mLoadCategoryList = true;
         }
     }
-
-    private void addCategoryClick() {
-        CategoryDialogFragment dialog = new CategoryDialogFragment();
-        dialog.show(getSupportFragmentManager(), "categoryDialog");
+    // Creates an instance and displays it using FragmentManager
+    private void showCategoryDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CategoryDialogFragment categoryDialogFragment = new CategoryDialogFragment();
+        categoryDialogFragment.show(fragmentManager, "category_dialog");
     }
 
     private class CategoryHolder extends RecyclerView.ViewHolder
@@ -97,7 +99,7 @@ public class CategoryActivity extends AppCompatActivity
         private final TextView mCategoryTextView;
 
         public CategoryHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.recycler_view_items, parent, false));
+            super(inflater.inflate(R.layout.category_view_items, parent, false));
             itemView.setOnClickListener(this);
             mCategoryTextView = itemView.findViewById(R.id.category_text_view);
             itemView.setOnLongClickListener(this);
@@ -177,11 +179,16 @@ public class CategoryActivity extends AppCompatActivity
         public void addCategory(Categories category) {
             mCategoryList.add(category);
             notifyDataSetChanged();
+            mRecyclerView.scrollToPosition(mCategoryList.size() - 1);
+
         }
 
         public void deleteCategory(Categories category) {
-            mCategoryList.remove(category);
-            notifyDataSetChanged();
+            int index = mCategoryList.indexOf(category);
+            if (index >= 0) {
+                mCategoryList.remove(category);
+                notifyItemRemoved(index);
+            }
         }
     }
 

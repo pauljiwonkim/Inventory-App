@@ -5,17 +5,24 @@ import androidx.annotation.NonNull;
 public class Items {
 
     private long mId;
-    private String mText;
-    private long mCategoryId;
+    private String mitemName;
+    private long mitemCategory;
+    private String mitemDesc;
+    private long mitemQuantity;
+    private double mitemPrice;
     private long mUpdateTime;
 
-    // Default constructor
     public Items() {
         mUpdateTime = System.currentTimeMillis();
     }
 
-    public Items(@NonNull String text) {
-        mText = text;
+    // Default constructor
+    public Items(long mitemId, String mitemName, String mitemDesc, long mitemQuantity, double mitemPrice) {
+        this.mId = mitemId;
+        this.mitemName = mitemName;
+        this.mitemDesc = mitemDesc;
+        this.mitemQuantity = mitemQuantity;
+        this.mitemPrice = mitemPrice;
         mUpdateTime = System.currentTimeMillis();
     }
 
@@ -26,20 +33,25 @@ public class Items {
     public void setId(long id) {
         mId = id;
     }
-    public String getText() {
-        return mText;
-    }
 
-    public void setText(String text) {
-        mText = text;
-    }
+    public String getItemName() { return mitemName;}
+    public void setItemName(String itemName) { mitemName = itemName;}
+    public String getItemDesc() { return mitemName;}
+    public void setItemDesc(String itemDesc) { mitemDesc = itemDesc;}
+
+    public long getItemQuantity() { return mitemQuantity;}
+    public void setItemQuantity(long itemQuantity) { mitemQuantity = itemQuantity;}
+
+    public double getItemPrice() { return mitemPrice;}
+    public void setItemPrice(double itemPrice) { mitemPrice = itemPrice;}
+
 
     public long getCategoryId() {
-        return mCategoryId;
+        return mitemCategory;
     }
 
-    public void setCategoryId(long categoryId) {
-        mCategoryId = categoryId;
+    public void setCategoryId(long itemCategory) {
+        mitemCategory = itemCategory;
     }
 
     public long getUpdateTime() {

@@ -18,6 +18,18 @@ public class CategoryDialogFragment extends DialogFragment {
 
     private onCategoryEnteredListener mListener;
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            mListener = (onCategoryEnteredListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnCategoryEnteredListener");
+        }
+
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -37,11 +49,6 @@ public class CategoryDialogFragment extends DialogFragment {
                 .create();
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        mListener = (onCategoryEnteredListener) context;
-    }
 
     @Override
     public void onDetach() {

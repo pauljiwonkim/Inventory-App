@@ -1,21 +1,36 @@
 package com.example.paulkiminventoryapp;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import com.example.paulkiminventoryapp.model.Items;
-import androidx.lifecycle.ViewModelProvider;
-import com.example.paulkiminventoryapp.viewmodel.InventoryDetailViewModel;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.paulkiminventoryapp.model.Items;
+import com.example.paulkiminventoryapp.repo.InventoryRepository;
+import com.example.paulkiminventoryapp.viewmodel.ItemDetailViewModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class InventoryEditActivity extends AppCompatActivity {
 
-    private InventoryDetailViewModel mInventoryDetailViewModel;
+    private ItemDetailViewModel mItemDetailViewModel;
+    private InventoryRepository mInventoryRepository;
+
     public static final String EXTRA_ITEM_ID = "com.example.paulkiminventoryapp.item_id";
     public static final String EXTRA_CATEGORY_ID = "com.example.paulkiminventoryapp.category_id";
 
-    private EditText mItemEditText;
+    private EditText mItemEditName;
+    private EditText mItemEditDesc;
+
+    private EditText mItemEditQuantity;
+
+    private EditText mItemEditPrice;
+    private FloatingActionButton mSaveButton;
     private long mItemId;
     private Items mItem;
 
@@ -24,54 +39,66 @@ public class InventoryEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_edit);
 
-        mItemEditText = findViewById(R.id.item_edit_text);
+        mItemEditName = findViewById(R.id.edit_item_name);
+        mItemEditDesc = findViewById(R.id.edit_item_desc);
+        mItemEditQuantity = findViewById(R.id.edit_item_quantity);
+        mItemEditPrice = findViewById(R.id.edit_item_price);
+        mSaveButton = findViewById(R.id.save_button);
 
-        findViewById(R.id.save_button).setOnClickListener(view -> saveButtonClick());
+        mItemDetailViewModel = new ViewModelProvider(this).get(ItemDetailViewModel.class);
 
-        mInventoryDetailViewModel = new ViewModelProvider(this).get(InventoryDetailViewModel.class);
-
-        // Get question ID from QuestionActivity
+        // Get item ID from Intent
         Intent intent = getIntent();
         mItemId = intent.getLongExtra(EXTRA_ITEM_ID, -1);
+        mItemDetailViewModel.loadItem(mItemId);
 
-        if (mItemId == -1) {
-            // Add new question
-            mItem = new Items();
-            mItem.setCategoryId(intent.getLongExtra(EXTRA_CATEGORY_ID, 0));
-
-            setTitle(R.string.add_item);
-        }
-        else {
-            // Display existing question from ViewModel
-            mInventoryDetailViewModel.loadItem(mItemId);
-            mInventoryDetailViewModel.itemsLiveData.observe(this, item -> {
-                mItem = item;
-                updateUI();
-            });
-
-            // Set title
-                setTitle(R.string.edit_item);
+            if (mItemId == -1) {
+                // Add new item
+                mItem = new Items();
+                mItem.setCategoryId(intent.getLongExtra(EXTRA_CATEGORY_ID, 0));
+            } else {
+                // Edit existing item
+                mItemDetailViewModel.loadItem(mItemId);
+                mItemDetailViewModel.itemsLiveData.observe(this, items -> {
+                    if (items != null) {
+                        mItem = items;
+                        updateUI();
+                    }
+                });
             }
         }
 
 
+
+
     private void updateUI() {
-        mItemEditText.setText(mItem.getText());
+        mItemEditName.setText(mItem.getItemName());
+        mItemEditDesc.setText(mItem.getItemDesc());
+        mItemEditQuantity.setText(String.valueOf(mItem.getItemQuantity())); // Must first convert long to String
+        mItemEditPrice.setText(String.valueOf(mItem.getItemPrice())); // Must first convert long to String
     }
 
-    private void saveButtonClick() {
-        mItem.setText(mItemEditText.getText().toString());
+    public void saveButtonClick(){
+                 if(getIntent().hasExtra("id") &&
+                    getIntent().hasExtra("name") &&
+                    getIntent().hasExtra("desc") &&
+                    getIntent().hasExtra("quantity") &&
+                    getIntent().hasExtra("price")) {
+                    // Get Data from intent
+                    long id = Long.parseLong(getIntent().getStringExtra("id"));
+                    String name = getIntent().getStringExtra("name");
+                    String desc = getIntent().getStringExtra("desc");
+                    String quantity = getIntent().getStringExtra("quantity");
+                    String price = getIntent().getStringExtra("price");
 
-        // Save new or existing question
-        if (mItemId == -1) {
-            mInventoryDetailViewModel.addItem(mItem);
-        }
-        else {
-            mInventoryDetailViewModel.updateItem(mItem);
-        }
+                    // Setting Intent Data
+                    mItemEditName.setText(name);
+                    mItemEditDesc.setText(desc);
+                    mItemEditQuantity.setText(quantity);
+                    mItemEditPrice.setText(price);
 
-        // Send back OK result
-        setResult(RESULT_OK);
-        finish();
+                } else{
+                    Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
+                }
     }
 }

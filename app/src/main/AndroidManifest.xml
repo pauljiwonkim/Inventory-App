@@ -16,12 +16,23 @@
         <activity
             android:name=".InventoryEditActivity"
             android:exported="false"
-            android:parentActivityName=".InventoryActivity" />
+            android:parentActivityName=".InventoryActivity"
+            android:launchMode="singleTop" />
         <activity
             android:name=".InventoryActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName=".CategoryActivity" />
+<!--        <activity-->
+<!--            android:name=".CategoryActivity"-->
+<!--            android:exported="false"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:parentActivityName=".LoginActivity" />-->
+<!--        <activity-->
+<!--            android:name=".UserListActivity"-->
+<!--            android:exported="false"-->
+<!--            android:launchMode="singleTop"-->
+<!--            android:parentActivityName=".LoginActivity" />-->
         <activity
             android:name=".CategoryActivity"
             android:exported="true">
