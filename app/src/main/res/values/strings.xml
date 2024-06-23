@@ -54,6 +54,7 @@
     <string name="update">Update</string>
     <string name="add_item_category">Item Category</string>
     <string name="edit_item_category">Item Category</string>
+    <string name="edit_item_id">Item ID</string>
 
 
 </resources>

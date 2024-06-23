@@ -2,7 +2,7 @@ package com.example.paulkiminventoryapp.model;
 
 public class User {
 
-    private long mId;
+    private String mId;
     private String mUserName;
     private String mUserPassword;
 
@@ -22,8 +22,8 @@ public class User {
         mUpdateTime = System.currentTimeMillis();
     }
 
-    public long getId() {return mId;}
-    public void setId(long id) { mId = id;}
+    public String getId() { return mId;}
+    public void setId(String id) { mId = id;}
 
     public String getUserName() {return mUserName;}
     public void setUserName(String username) { mUserName = username;}

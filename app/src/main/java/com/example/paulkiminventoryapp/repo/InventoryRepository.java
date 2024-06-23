@@ -14,12 +14,12 @@ public class InventoryRepository {
     private static InventoryRepository mInventoryRepo;
     private InventoryDatabase mInventoryDatabase;
     private final List<Categories> mCategoriesList;
-    private final HashMap<Long, List<Items>> mInventoryMap;
+    private final HashMap<String, List<Items>> mInventoryMap;
     private final MutableLiveData<List<Categories>> mCategoriesLiveData;
 
     private InventoryRepository(Context context) {
         mCategoriesList = new ArrayList<>();
-        mInventoryMap = new HashMap<>();
+        mInventoryMap = new HashMap<String, List<Items>>();
         mCategoriesLiveData = new MutableLiveData<>();
 
         addStarterData();
@@ -36,15 +36,15 @@ public class InventoryRepository {
     private void addStarterData() {
         // Add a few starting categories
         Categories category1 = new Categories("Category 1");
-        category1.setId(1);
+        category1.setId("1");
         addCategory(category1);
 
         Categories category2 = new Categories("Category 2");
-        category2.setId(2);
+        category2.setId("2");
         addCategory(category2);
 
         Categories category3 = new Categories("Category 3");
-        category3.setId(3);
+        category3.setId("3");
         addCategory(category3);
 
     }
@@ -65,9 +65,9 @@ public class InventoryRepository {
         mCategoriesLiveData.setValue(mCategoriesList); // Notify observers
     }
 
-    public Categories getCategory(long categoryId) {
+    public Categories getCategory(String categoryId) {
         for (Categories category : mCategoriesList) {
-            if (category.getId() == categoryId) {
+            if (category.getId().equals(categoryId)) {
                 return category;
             }
         }
@@ -97,7 +97,7 @@ public class InventoryRepository {
         if (itemList != null) {
             for (int i = 0; i < itemList.size(); i++) {
                 Items currentItem = itemList.get(i);
-                if (currentItem.getId() == updatedItem.getId()) {
+                if (currentItem.getId().equals(updatedItem.getId())) {
                     // Update item details with the new values
                     currentItem.setItemName(updatedItem.getItemName());
                     currentItem.setItemDesc(updatedItem.getItemDesc());
@@ -110,7 +110,7 @@ public class InventoryRepository {
         }
     }
 
-    public LiveData<List<Items>> getItems(long categoryId) {
+    public LiveData<List<Items>> getItems(String categoryId) {
         MutableLiveData<List<Items>> itemsLiveData = new MutableLiveData<>();
         List<Items> itemList = mInventoryMap.get(categoryId);
         if (itemList == null) {
@@ -122,12 +122,12 @@ public class InventoryRepository {
 
 
 
-    public LiveData<Items> getItem(long itemId) {
+    public LiveData<Items> getItem(String itemId) {
         MutableLiveData<Items> itemLiveData = new MutableLiveData<>();
         // Iterate through all categories to find the item
         for (List<Items> itemList : mInventoryMap.values()) {
             for (Items item : itemList) {
-                if (item.getId() == itemId) {
+                if (item.getId().equals(itemId)) {
                     itemLiveData.setValue(item);
                     return itemLiveData;
                 }

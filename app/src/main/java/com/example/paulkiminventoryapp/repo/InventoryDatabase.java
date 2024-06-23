@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.paulkiminventoryapp.model.Categories;
+import com.example.paulkiminventoryapp.model.Items;
 
 public class InventoryDatabase extends SQLiteOpenHelper {
 
@@ -76,7 +77,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
 
 // Items
-    public void addItemData(String name,  String description, long quantity, double price) {
+    public void addItemData(String name, String description, long quantity, double price) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(InventoryTable.COL_NAME, name);
@@ -108,5 +109,17 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         }
         return cursor;
     }
+
+    public void updateItemData(Items item) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(InventoryTable.COL_NAME, item.getItemName());
+        values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
+        values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
+        values.put(InventoryTable.COL_PRICE, item.getItemPrice());
+        db.update(InventoryTable.TABLE, values, InventoryTable.COL_ID + " = ?", new String[]{String.valueOf(item.getId())});
+        db.close();
+    }
 }
+
 

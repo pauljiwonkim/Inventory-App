@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 public class Categories {
 
-    private long mCategoryId;
+    private String mCategoryId;
     private String mText;
     private long mUpdateTime;
 
@@ -14,11 +14,11 @@ public class Categories {
         mUpdateTime = System.currentTimeMillis();
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mCategoryId = id;
     }
 
-    public long getId() {
+    public String getId() {
         return mCategoryId;
     }
 

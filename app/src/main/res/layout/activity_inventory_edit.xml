@@ -15,6 +15,13 @@
         android:textStyle="bold" />
 
     <EditText
+        android:id="@+id/edit_item_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_item_id"
+        android:maxLines="1" />
+
+    <EditText
         android:id="@+id/edit_item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

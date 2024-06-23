@@ -7,6 +7,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +17,7 @@ import androidx.fragment.app.DialogFragment;
 public class ItemDialogFragment extends DialogFragment {
 
     public interface onItemEnteredListener {
-        void onItemEntered(long itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice);
+        void onItemEntered(String itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice);
     }
 
     private onItemEnteredListener mListener;
@@ -36,7 +37,7 @@ public class ItemDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         // Use LayoutInflater to convert XML to View
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.fragment_item_dialog,null);
+        View view = inflater.inflate(R.layout.fragment_item_dialog, null);
 
         // Find EditText fields from xml layout
         final EditText itemAddId = view.findViewById(R.id.add_item_id);
@@ -51,21 +52,29 @@ public class ItemDialogFragment extends DialogFragment {
 
                 .setPositiveButton("Add", (dialog, whichButton) -> {
 
-                    // Notify listener
-                    long itemId = Long.parseLong(itemAddId.getText().toString());
-                    String itemName  = itemAddName.getText().toString();
-                    String itemDesc  = itemAddDesc.getText().toString();
-                    long itemQuantity = Long.parseLong(itemAddQuantity.getText().toString());
-                    long itemPrice = Long.parseLong(itemAddPrice.getText().toString());
+                    String itemIdStr = itemAddId.getText().toString().trim();
+                    String itemName = itemAddName.getText().toString().trim();
+                    String itemDesc = itemAddDesc.getText().toString().trim();
+                    String itemQuantityStr = itemAddQuantity.getText().toString().trim();
+                    String itemPriceStr = itemAddPrice.getText().toString().trim();
 
-                    mListener.onItemEntered(itemId, itemName.trim(), itemDesc, itemQuantity, itemPrice);
+                    if (itemIdStr.isEmpty() || itemName.isEmpty() || itemDesc.isEmpty() || itemQuantityStr.isEmpty() || itemPriceStr.isEmpty()) {
+                        Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            long itemQuantity = Long.parseLong(itemQuantityStr);
+                            long itemPrice = Long.parseLong(itemPriceStr);
+
+                            mListener.onItemEntered(itemIdStr, itemName, itemDesc, itemQuantity, itemPrice);
+                            dismiss(); // Dismiss dialog on successful addition
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(getContext(), "Please enter valid numbers for Quantity and Price", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dismiss())
                 .create();
     }
-
-
-
 
     @Override
     public void onDetach() {

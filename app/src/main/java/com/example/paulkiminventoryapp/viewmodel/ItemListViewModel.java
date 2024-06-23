@@ -19,7 +19,7 @@ public class ItemListViewModel extends AndroidViewModel {
         mInvenRepo = InventoryRepository.getInstance(application.getApplicationContext());
     }
 
-    public LiveData<List<Items>> getItems(long categoryId) {
+    public LiveData<List<Items>> getItems(String categoryId) {
         return mInvenRepo.getItems(categoryId);
     }
 

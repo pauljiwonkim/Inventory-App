@@ -1,4 +1,5 @@
 package com.example.paulkiminventoryapp;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,14 +16,15 @@ import java.util.ArrayList;
 public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.ViewHolder> {
 
     public Context context;
+    Activity activity;
     public ArrayList <String> item_id, item_name, item_desc, item_quantity, item_price;
-    public CustomItemAdapter(Context context,
-                              ArrayList <String> item_id,
-                              ArrayList <String> item_name,
-                              ArrayList <String> item_desc,
-                              ArrayList <String> item_quantity,
-                              ArrayList <String> item_price){
-
+    public CustomItemAdapter(Activity activity, Context context,
+                             ArrayList <String> item_id,
+                             ArrayList <String> item_name,
+                             ArrayList <String> item_desc,
+                             ArrayList <String> item_quantity,
+                             ArrayList <String> item_price){
+        this.activity = activity;
         this.context = context;
         this.item_id = item_id;
         this.item_name = item_name;
@@ -63,8 +65,8 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 intent.putExtra("name", String.valueOf(item_name.get(position)));
                 intent.putExtra("desc", String.valueOf(item_desc.get(position)));
                 intent.putExtra("quantity", String.valueOf(item_quantity.get(position)));
-                intent.putExtra("prices", String.valueOf(item_price.get(position)));
-                context.startActivity(intent);
+                intent.putExtra("price", String.valueOf(item_price.get(position)));
+                activity.startActivityForResult(intent, 1);
             }
         });
 }

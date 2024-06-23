@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,15 +51,23 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
         item_price = new ArrayList<>();
 
         Intent intent = getIntent();
-        long categoryId = intent.getLongExtra(EXTRA_CATEGORY_ID, 0);
+        String categoryId = intent.getStringExtra(EXTRA_CATEGORY_ID);
         String categoryText = intent.getStringExtra(EXTRA_CATEGORY_TEXT);
         mCategories = new Categories(categoryText);
         mCategories.setId(categoryId);
 
         updateUI();
-        customItemAdapter = new CustomItemAdapter(this, item_id, item_name, item_desc, item_quantity, item_price);
+        customItemAdapter = new CustomItemAdapter(InventoryActivity.this,this, item_id, item_name, item_desc, item_quantity, item_price);
         mRecyclerView.setAdapter(customItemAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            recreate();
+        }
     }
 
     private void updateUI() {
@@ -84,29 +93,19 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
 
 
 
-//    @Override
-//    public void onItemEntered(String itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice) {
-//        item_id.add(itemId);
-//        item_name.add(itemName);
-//        item_desc.add(itemDesc);
-//        item_quantity.add(String.valueOf(itemQuantity)); // Convert to String if necessary
-//        item_price.add(String.valueOf(itemPrice)); // Convert to String if necessary
-//
-//        // Notify the adapter that data set has changed
-//        customItemAdapter.notifyDataSetChanged();
-//    }
     @Override
-    public void onItemEntered(long itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice) {
-        if (itemId > 0 || itemName.isEmpty() || itemDesc.isEmpty() || itemQuantity<0 || itemPrice<0) {
+    public void onItemEntered(String itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice) {
+        if (!itemId.isEmpty() || itemName.isEmpty() || itemDesc.isEmpty() || itemQuantity<0 || itemPrice<0) {
             {
-                mInventoryDatabase.addItemData(itemName,  itemDesc, itemQuantity, itemPrice);
-                Items item = new Items(itemId, itemName,  itemDesc, itemQuantity, itemPrice);
-
-                item.setCategoryId(item.getId());
-                mItemsListViewModel.addItem(item);
+                item_id.add(itemId);
+                item_name.add(itemName);
+                item_desc.add(itemDesc);
+                item_quantity.add(String.valueOf(itemQuantity)); // Convert to String if necessary
+                item_price.add(String.valueOf(itemPrice)); // Convert to String if necessary
                 Toast.makeText(this, "Added Item", Toast.LENGTH_SHORT).show();
-                customItemAdapter.notifyDataSetChanged();
 
+                // Notify the adapter that data set has changed
+                customItemAdapter.notifyDataSetChanged();
             }
         }
     }

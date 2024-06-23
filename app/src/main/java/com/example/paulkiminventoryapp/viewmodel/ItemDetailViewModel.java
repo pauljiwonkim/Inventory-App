@@ -16,7 +16,7 @@ import java.util.List;
 public class ItemDetailViewModel extends AndroidViewModel {
 
     private InventoryRepository mInventoryRepo;
-    private final MutableLiveData<Long> itemIdLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> itemIdLiveData = new MutableLiveData<>();
 
     public LiveData<Items>itemsLiveData =
             Transformations.switchMap(itemIdLiveData, itemId ->
@@ -27,7 +27,7 @@ public class ItemDetailViewModel extends AndroidViewModel {
         mInventoryRepo = InventoryRepository.getInstance(application.getApplicationContext());
     }
 
-    public void loadItem(long itemId) {
+    public void loadItem(String itemId) {
         itemIdLiveData.setValue(itemId);
     }
 

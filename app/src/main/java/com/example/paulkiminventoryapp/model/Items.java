@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 
 public class Items {
 
-    private long mId;
-    private String mitemName;
-    private long mitemCategory;
+    private String mId;
+    private String mItemName;
+    private String mitemCategory;
     private String mitemDesc;
     private long mitemQuantity;
     private double mitemPrice;
@@ -17,26 +17,26 @@ public class Items {
     }
 
     // Default constructor
-    public Items(long mitemId, String mitemName, String mitemDesc, long mitemQuantity, double mitemPrice) {
-        this.mId = mitemId;
-        this.mitemName = mitemName;
+    public Items(String id, String itemName, String mitemDesc, long mitemQuantity, double mitemPrice) {
+        this.mId = id;
+        this.mItemName = itemName;
         this.mitemDesc = mitemDesc;
         this.mitemQuantity = mitemQuantity;
         this.mitemPrice = mitemPrice;
         mUpdateTime = System.currentTimeMillis();
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 
-    public String getItemName() { return mitemName;}
-    public void setItemName(String itemName) { mitemName = itemName;}
-    public String getItemDesc() { return mitemName;}
+    public String getItemName() { return mItemName;}
+    public void setItemName(String itemName) { mItemName = itemName;}
+    public String getItemDesc() { return mItemName;}
     public void setItemDesc(String itemDesc) { mitemDesc = itemDesc;}
 
     public long getItemQuantity() { return mitemQuantity;}
@@ -46,11 +46,11 @@ public class Items {
     public void setItemPrice(double itemPrice) { mitemPrice = itemPrice;}
 
 
-    public long getCategoryId() {
+    public String getCategoryId() {
         return mitemCategory;
     }
 
-    public void setCategoryId(long itemCategory) {
+    public void setCategoryId(String itemCategory) {
         mitemCategory = itemCategory;
     }
 
