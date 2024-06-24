@@ -36,7 +36,7 @@ public class Items {
 
     public String getItemName() { return mItemName;}
     public void setItemName(String itemName) { mItemName = itemName;}
-    public String getItemDesc() { return mItemName;}
+    public String getItemDesc() { return mItemDesc;}
     public void setItemDesc(String ItemDesc) { mItemDesc = ItemDesc;}
 
     public long getItemQuantity() { return mitemQuantity;}

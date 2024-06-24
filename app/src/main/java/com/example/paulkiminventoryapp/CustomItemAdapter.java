@@ -18,6 +18,13 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
     public Context context;
     Activity activity;
     public ArrayList <String> item_id, item_name, item_desc, item_quantity, item_price;
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+    private OnItemLongClickListener longClickListener;
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.longClickListener = listener;
+    }
     public CustomItemAdapter(Activity activity, Context context,
                              ArrayList <String> item_id,
                              ArrayList <String> item_name,
@@ -67,6 +74,16 @@ public class CustomItemAdapter extends RecyclerView.Adapter<CustomItemAdapter.Vi
                 intent.putExtra("quantity", String.valueOf(item_quantity.get(position)));
                 intent.putExtra("price", String.valueOf(item_price.get(position)));
                 activity.startActivityForResult(intent, 1);
+            }
+        });
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (longClickListener != null) {
+                    longClickListener.onItemLongClick(position);
+                    return true;
+                }
+                return false;
             }
         });
 }

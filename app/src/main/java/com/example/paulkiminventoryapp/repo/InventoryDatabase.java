@@ -59,8 +59,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion,
                           int newVersion) {
-        db.execSQL("drop table if exists " + InventoryTable.TABLE);
-        db.execSQL("drop table if exists " + CategoryTable.TABLE);
+         db.execSQL("drop table if exists " + InventoryTable.TABLE);
+         db.execSQL("drop table if exists " + CategoryTable.TABLE);
         onCreate(db);
     }
 
@@ -89,8 +89,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public void addItemData(Items item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
+        //values.put(InventoryTable.COL_ID, item.getId());
         values.put(InventoryTable.COL_NAME, item.getItemName());
+        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
         values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
         values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
         values.put(InventoryTable.COL_PRICE, item.getItemPrice());
@@ -101,6 +102,25 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         } else {
             Toast.makeText(context, "Item Added Successfully!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void updateItemData(Items item) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(InventoryTable.COL_ID, item.getId());
+        values.put(InventoryTable.COL_NAME, item.getItemName());
+        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
+        values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
+        values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
+        values.put(InventoryTable.COL_PRICE, item.getItemPrice());
+        db.update(InventoryTable.TABLE, values, InventoryTable.COL_ID + " = ?", new String[]{String.valueOf(item.getId())});
+        db.close();
+    }
+
+    public void deleteItemData(Items item) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(InventoryTable.TABLE, InventoryTable.COL_ID + " = ?", new String[]{String.valueOf(item.getId())});
+        db.close();
     }
 
     public Cursor readItemsByCategory(String category) {
@@ -120,18 +140,6 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void updateItemData(Items item) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(InventoryTable.COL_ID, item.getId());
-        values.put(InventoryTable.COL_NAME, item.getItemName());
-        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
-        values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
-        values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
-        values.put(InventoryTable.COL_PRICE, item.getItemPrice());
-        db.update(InventoryTable.TABLE, values, InventoryTable.COL_ID + " = ?", new String[]{String.valueOf(item.getId())});
-        db.close();
-    }
 }
 
 

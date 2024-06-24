@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,10 +41,14 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
+
         Button mAddButton = findViewById(R.id.add_item_button);
         mAddButton.setOnClickListener(view -> addItemClick());
 
+        mItemDetailViewModel = new ViewModelProvider(this).get(ItemDetailViewModel.class);
+
         mRecyclerView = findViewById(R.id.items_recycler);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mInventoryDatabase = new InventoryDatabase(this);
         item_id = new ArrayList<>();
@@ -59,10 +64,9 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
         mCategories = new Categories(categoryText);
         mCategories.setId(categoryId);
 
-        updateUI();
         customItemAdapter = new CustomItemAdapter(InventoryActivity.this,this, item_id, item_name, item_desc, item_quantity, item_price);
         mRecyclerView.setAdapter(customItemAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        updateUI();
     }
 
     @Override
@@ -74,6 +78,14 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
     }
 
     private void updateUI() {
+        // Clear existing data
+        item_id.clear();
+        item_name.clear();
+        item_category.clear();
+        item_desc.clear();
+        item_quantity.clear();
+        item_price.clear();
+
         Cursor cursor = mInventoryDatabase.readAllData();
         if (cursor == null) {
             Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
@@ -87,6 +99,8 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
                 item_price.add(cursor.getString(5));
             }
         }
+        customItemAdapter.notifyDataSetChanged();
+
     }
 
     private void addItemClick() {
@@ -98,31 +112,27 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
 
     @Override
     public void onItemEntered(Items item) {
-        String itemId = item.getId();
         String itemName = item.getItemName();
         String itemDesc = item.getItemDesc();
         long itemQuantity = item.getItemQuantity();
         double itemPrice = item.getItemPrice();
 
-        if (itemName.isEmpty() || itemDesc.isEmpty() || itemQuantity<0 || itemPrice<0) {
-            {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            }
+        if (itemDesc.isEmpty() || itemQuantity < 0 || itemPrice < 0) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
         }
-        else {
-            mItem = new Items(itemId, itemName, itemDesc, itemQuantity, itemPrice);
-            item_id.add(itemId);
-            item_name.add(itemName);
-            item_desc.add(itemDesc);
-            item_quantity.add(String.valueOf(itemQuantity)); // Convert to String if necessary
-            item_price.add(String.valueOf(itemPrice)); // Convert to String if necessary
-            Toast.makeText(this, "Added Item", Toast.LENGTH_SHORT).show();
-            mInventoryDatabase.addItemData(new Items(itemId, itemName, itemDesc, itemQuantity, itemPrice));
-            // Notify the adapter that data set has changed
-            customItemAdapter.notifyDataSetChanged();
 
-        }
+
+            // Set item fields
+        item.setItemName(itemName);
+        item.setItemDesc(itemDesc);
+
+            // Add or update item in database through ViewModel
+        mItemDetailViewModel.addItem(item);
+        updateUI();
     }
+
+
 
     public void onClick(View v) {
         // Handle click event

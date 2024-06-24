@@ -35,8 +35,6 @@ public class CategoryActivity extends AppCompatActivity
     private int[] mCategoryColors;
     private CategoryListViewModel mCategoryListViewModel;
     private Categories mSelectedCategory;
-    private InventoryDatabase mInventoryDatabase;
-    private InventoryRepository mInventoryRepo;
     private int mSelectedCategoryPosition = RecyclerView.NO_POSITION;
     private ActionMode mActionMode = null;
 
