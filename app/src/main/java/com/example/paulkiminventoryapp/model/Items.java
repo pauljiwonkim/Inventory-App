@@ -7,7 +7,7 @@ public class Items {
     private String mId;
     private String mItemName;
     private String mitemCategory;
-    private String mitemDesc;
+    private String mItemDesc;
     private long mitemQuantity;
     private double mitemPrice;
     private long mUpdateTime;
@@ -17,10 +17,10 @@ public class Items {
     }
 
     // Default constructor
-    public Items(String id, String itemName, String mitemDesc, long mitemQuantity, double mitemPrice) {
+    public Items(String id, String mItemName, String mItemDesc, long mitemQuantity, double mitemPrice) {
         this.mId = id;
-        this.mItemName = itemName;
-        this.mitemDesc = mitemDesc;
+        this.mItemName = mItemName;
+        this.mItemDesc = mItemDesc;
         this.mitemQuantity = mitemQuantity;
         this.mitemPrice = mitemPrice;
         mUpdateTime = System.currentTimeMillis();
@@ -37,7 +37,7 @@ public class Items {
     public String getItemName() { return mItemName;}
     public void setItemName(String itemName) { mItemName = itemName;}
     public String getItemDesc() { return mItemName;}
-    public void setItemDesc(String itemDesc) { mitemDesc = itemDesc;}
+    public void setItemDesc(String ItemDesc) { mItemDesc = ItemDesc;}
 
     public long getItemQuantity() { return mitemQuantity;}
     public void setItemQuantity(long itemQuantity) { mitemQuantity = itemQuantity;}

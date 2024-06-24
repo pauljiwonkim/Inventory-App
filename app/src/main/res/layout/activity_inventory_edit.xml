@@ -14,12 +14,13 @@
         android:textSize="48sp"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/edit_item_id"
+    <TextView
+        android:id="@+id/item_id"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="39dp"
         android:hint="@string/edit_item_id"
-        android:maxLines="1" />
+        android:maxLines="1"
+        android:textSize="22sp" />
 
     <EditText
         android:id="@+id/edit_item_name"

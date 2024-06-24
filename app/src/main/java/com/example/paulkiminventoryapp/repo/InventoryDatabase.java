@@ -18,6 +18,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     private Context context;
     public InventoryDatabase(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
+        this.context = context;
     }
 
     private static final class CategoryTable{
@@ -48,7 +49,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
                 InventoryTable.COL_CATEGORY + " text, " +
                 InventoryTable.COL_DESCRIPTION + " text, " +
                 InventoryTable.COL_QUANTITY + " integer, " +
-                InventoryTable.COL_PRICE + " real);");
+                InventoryTable.COL_PRICE + " REAL, " +
+                "FOREIGN KEY(" + InventoryTable.COL_CATEGORY + ") REFERENCES " + CategoryTable.TABLE + "(" + CategoryTable.COL_ID + "));");
 
         db.execSQL("create table " + CategoryTable.TABLE + " (" +
                 CategoryTable.COL_ID + " integer primary key autoincrement, " +
@@ -58,6 +60,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion,
                           int newVersion) {
         db.execSQL("drop table if exists " + InventoryTable.TABLE);
+        db.execSQL("drop table if exists " + CategoryTable.TABLE);
         onCreate(db);
     }
 
@@ -71,26 +74,33 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteCategoryData(Categories category) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(CategoryTable.TABLE, CategoryTable.COL_ID + " = ?", new String[]{category.getId()});
+        db.close();
+    }
+
     public Cursor readAllCategories() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + CategoryTable.TABLE, null);
     }
 
 // Items
-    public void addItemData(String name, String description, long quantity, double price) {
+    public void addItemData(Items item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(InventoryTable.COL_NAME, name);
-        values.put(InventoryTable.COL_DESCRIPTION, description);
-        values.put(InventoryTable.COL_QUANTITY, quantity);
-        values.put(InventoryTable.COL_PRICE, price);
+        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
+        values.put(InventoryTable.COL_NAME, item.getItemName());
+        values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
+        values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
+        values.put(InventoryTable.COL_PRICE, item.getItemPrice());
         long result = db.insert(InventoryTable.TABLE, null, values);
+        db.close();
         if (result == -1) {
             Toast.makeText(context, "Failed!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Item Added Successfully!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public Cursor readItemsByCategory(String category) {
@@ -113,7 +123,9 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public void updateItemData(Items item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(InventoryTable.COL_ID, item.getId());
         values.put(InventoryTable.COL_NAME, item.getItemName());
+        values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
         values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
         values.put(InventoryTable.COL_QUANTITY, item.getItemQuantity());
         values.put(InventoryTable.COL_PRICE, item.getItemPrice());

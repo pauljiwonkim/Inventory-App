@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.paulkiminventoryapp.model.Categories;
 import com.example.paulkiminventoryapp.model.Items;
 import com.example.paulkiminventoryapp.repo.InventoryDatabase;
+import com.example.paulkiminventoryapp.viewmodel.ItemDetailViewModel;
 import com.example.paulkiminventoryapp.viewmodel.ItemListViewModel;
 
 import java.util.ArrayList;
@@ -26,10 +27,12 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
 
     RecyclerView mRecyclerView;
 
-    ArrayList<String> item_id, item_name, item_category, item_desc, item_quantity, item_price;
+     ArrayList<String> item_id, item_name, item_category, item_desc, item_quantity, item_price;
     InventoryDatabase mInventoryDatabase;
-    ItemListViewModel mItemsListViewModel;
+    ItemDetailViewModel mItemDetailViewModel;
     CustomItemAdapter customItemAdapter;
+    private Items mItem;
+
 
     private Categories mCategories;
 
@@ -72,7 +75,7 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
 
     private void updateUI() {
         Cursor cursor = mInventoryDatabase.readAllData();
-        if (cursor == null || cursor.getCount() == 0) {
+        if (cursor == null) {
             Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
@@ -94,19 +97,30 @@ public class InventoryActivity extends AppCompatActivity implements ItemDialogFr
 
 
     @Override
-    public void onItemEntered(String itemId, String itemName, String itemDesc, long itemQuantity, long itemPrice) {
-        if (!itemId.isEmpty() || itemName.isEmpty() || itemDesc.isEmpty() || itemQuantity<0 || itemPrice<0) {
-            {
-                item_id.add(itemId);
-                item_name.add(itemName);
-                item_desc.add(itemDesc);
-                item_quantity.add(String.valueOf(itemQuantity)); // Convert to String if necessary
-                item_price.add(String.valueOf(itemPrice)); // Convert to String if necessary
-                Toast.makeText(this, "Added Item", Toast.LENGTH_SHORT).show();
+    public void onItemEntered(Items item) {
+        String itemId = item.getId();
+        String itemName = item.getItemName();
+        String itemDesc = item.getItemDesc();
+        long itemQuantity = item.getItemQuantity();
+        double itemPrice = item.getItemPrice();
 
-                // Notify the adapter that data set has changed
-                customItemAdapter.notifyDataSetChanged();
+        if (itemName.isEmpty() || itemDesc.isEmpty() || itemQuantity<0 || itemPrice<0) {
+            {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
             }
+        }
+        else {
+            mItem = new Items(itemId, itemName, itemDesc, itemQuantity, itemPrice);
+            item_id.add(itemId);
+            item_name.add(itemName);
+            item_desc.add(itemDesc);
+            item_quantity.add(String.valueOf(itemQuantity)); // Convert to String if necessary
+            item_price.add(String.valueOf(itemPrice)); // Convert to String if necessary
+            Toast.makeText(this, "Added Item", Toast.LENGTH_SHORT).show();
+            mInventoryDatabase.addItemData(new Items(itemId, itemName, itemDesc, itemQuantity, itemPrice));
+            // Notify the adapter that data set has changed
+            customItemAdapter.notifyDataSetChanged();
+
         }
     }
 

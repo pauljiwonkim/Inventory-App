@@ -1,29 +1,24 @@
 package com.example.paulkiminventoryapp.repo;
 
 import android.content.Context;
-import com.example.paulkiminventoryapp.model.Categories;
-import com.example.paulkiminventoryapp.model.Items;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.example.paulkiminventoryapp.model.Categories;
+import com.example.paulkiminventoryapp.model.Items;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InventoryRepository {
 
     private static InventoryRepository mInventoryRepo;
-    private InventoryDatabase mInventoryDatabase;
-    private final List<Categories> mCategoriesList;
-    private final HashMap<String, List<Items>> mInventoryMap;
-    private final MutableLiveData<List<Categories>> mCategoriesLiveData;
+    private final InventoryDatabase mInventoryDatabase;
 
     private InventoryRepository(Context context) {
-        mCategoriesList = new ArrayList<>();
-        mInventoryMap = new HashMap<String, List<Items>>();
-        mCategoriesLiveData = new MutableLiveData<>();
-
-        addStarterData();
-        mCategoriesLiveData.setValue(mCategoriesList);
+        mInventoryDatabase = new InventoryDatabase(context);
     }
 
     public static InventoryRepository getInstance(Context context) {
@@ -33,110 +28,80 @@ public class InventoryRepository {
         return mInventoryRepo;
     }
 
-    private void addStarterData() {
-        // Add a few starting categories
-        Categories category1 = new Categories("Category 1");
-        category1.setId("1");
-        addCategory(category1);
 
-        Categories category2 = new Categories("Category 2");
-        category2.setId("2");
-        addCategory(category2);
-
-        Categories category3 = new Categories("Category 3");
-        category3.setId("3");
-        addCategory(category3);
-
-    }
-
+    // Category methods
     public void addCategory(Categories category) {
-        mCategoriesList.add(category);
-        List<Items> itemList = new ArrayList<>();
-        mInventoryMap.put(category.getId(), itemList);
-        mCategoriesLiveData.setValue(mCategoriesList); // Notify observers
+        mInventoryDatabase.addCategoryData(category);
     }
 
     public void deleteCategory(Categories category) {
-        // Remove category from mCategoriesList
-        mCategoriesList.remove(category);
-
-        // Remove associated items from mInventoryMap
-        mInventoryMap.remove(category.getId());
-        mCategoriesLiveData.setValue(mCategoriesList); // Notify observers
+        mInventoryDatabase.deleteCategoryData(category);
     }
 
-    public Categories getCategory(String categoryId) {
-        for (Categories category : mCategoriesList) {
-            if (category.getId().equals(categoryId)) {
-                return category;
-            }
-        }
-        return null;
-    }
 
     public LiveData<List<Categories>> getCategories() {
-        return mCategoriesLiveData;
+        MutableLiveData<List<Categories>> categoriesLiveData = new MutableLiveData<>();
+        Cursor cursor = mInventoryDatabase.readAllCategories();
+        List<Categories> categoriesList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Categories category = new Categories(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            category.setId(cursor.getString(cursor.getColumnIndexOrThrow("_id")));
+            categoriesList.add(category);
+        }
+        cursor.close();
+        categoriesLiveData.setValue(categoriesList);
+        return categoriesLiveData;
     }
 
-    public void addItem(Items items) {
-        List<Items> itemList = mInventoryMap.get(items.getCategoryId());
-        if (itemList != null) {
-            itemList.add(items);
-        }
-    }
-
-    public void deleteItem(Items items) {
-        List<Items> itemList = mInventoryMap.get(items.getCategoryId());
-        if (itemList != null) {
-            itemList.remove(items);
-        }
+    // Item methods
+    public void addItem(Items item) {
+        mInventoryDatabase.addItemData(item);
     }
 
     public void updateItem(Items updatedItem) {
-        List<Items> itemList = mInventoryMap.get(updatedItem.getCategoryId());
-        if (itemList != null) {
-            for (int i = 0; i < itemList.size(); i++) {
-                Items currentItem = itemList.get(i);
-                if (currentItem.getId().equals(updatedItem.getId())) {
-                    // Update item details with the new values
-                    currentItem.setItemName(updatedItem.getItemName());
-                    currentItem.setItemDesc(updatedItem.getItemDesc());
-                    currentItem.setItemQuantity(updatedItem.getItemQuantity());
-                    // Replace the item in the list
-                    itemList.set(i, currentItem);
-                    break;
-                }
-            }
-        }
+        mInventoryDatabase.updateItemData(updatedItem);
     }
 
     public LiveData<List<Items>> getItems(String categoryId) {
         MutableLiveData<List<Items>> itemsLiveData = new MutableLiveData<>();
-        List<Items> itemList = mInventoryMap.get(categoryId);
-        if (itemList == null) {
-            itemList = new ArrayList<>(); // Initialize an empty list if none found
+        Cursor cursor = mInventoryDatabase.readItemsByCategory(categoryId);
+        List<Items> itemsList = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Items item = new Items(
+                    cursor.getString(cursor.getColumnIndexOrThrow("_id")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                    cursor.getLong(cursor.getColumnIndexOrThrow("quantity")),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow("price"))
+            );
+            item.setCategoryId(cursor.getString(cursor.getColumnIndexOrThrow("category")));
+            itemsList.add(item);
         }
-        itemsLiveData.setValue(itemList);
+        cursor.close();
+        itemsLiveData.setValue(itemsList);
         return itemsLiveData;
     }
 
-
-
     public LiveData<Items> getItem(String itemId) {
         MutableLiveData<Items> itemLiveData = new MutableLiveData<>();
-        // Iterate through all categories to find the item
-        for (List<Items> itemList : mInventoryMap.values()) {
-            for (Items item : itemList) {
-                if (item.getId().equals(itemId)) {
-                    itemLiveData.setValue(item);
-                    return itemLiveData;
-                }
+        Cursor cursor = mInventoryDatabase.readAllData();
+        while (cursor.moveToNext()) {
+            if (cursor.getString(cursor.getColumnIndexOrThrow("_id")).equals(itemId)) {
+                Items item = new Items(
+                        cursor.getString(cursor.getColumnIndexOrThrow("_id")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                        cursor.getString(cursor.getColumnIndexOrThrow("description")),
+                        cursor.getLong(cursor.getColumnIndexOrThrow("quantity")),
+                        cursor.getDouble(cursor.getColumnIndexOrThrow("price"))
+                );
+                item.setCategoryId(cursor.getString(cursor.getColumnIndexOrThrow("category")));
+                itemLiveData.setValue(item);
+                break;
             }
         }
-        itemLiveData.setValue(null); // Return null if item is not found
+        cursor.close();
         return itemLiveData;
     }
-
-
-
 }
+
+

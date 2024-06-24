@@ -6,11 +6,12 @@
     android:padding="16dp"
     android:id="@+id/item_dialog_layout">
 
-    <EditText
-        android:id="@+id/add_item_id"
+    <TextView
+        android:id="@+id/item_id_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:hint="Item Id"
+        android:textSize = "22sp"
         android:maxLines="1" />
 
     <EditText
