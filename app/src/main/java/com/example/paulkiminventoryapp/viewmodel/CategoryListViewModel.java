@@ -1,6 +1,8 @@
 package com.example.paulkiminventoryapp.viewmodel;
 
 import android.app.Application;
+import android.widget.Toast;
+
 import androidx.lifecycle.AndroidViewModel;
 import com.example.paulkiminventoryapp.model.Categories;
 import com.example.paulkiminventoryapp.repo.InventoryRepository;
@@ -19,12 +21,15 @@ public class CategoryListViewModel extends AndroidViewModel{
         return mInvenRepo.getCategories();
     }
 
-
-    public void addCategory(Categories category) {
+    public String addCategory(Categories category) {
         mInvenRepo.addCategory(category);
+        return category.getId();
     }
 
     public void deleteCategory(Categories category) {
-        mInvenRepo.deleteCategory(category);
-    }
+        if(mInvenRepo != null){
+            mInvenRepo.deleteCategory(category);
+
+        }
+}
 }

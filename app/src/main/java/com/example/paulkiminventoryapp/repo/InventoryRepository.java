@@ -21,6 +21,7 @@ public class InventoryRepository {
         mInventoryDatabase = new InventoryDatabase(context);
     }
 
+
     public static InventoryRepository getInstance(Context context) {
         if (mInventoryRepo == null) {
             mInventoryRepo = new InventoryRepository(context);
@@ -28,18 +29,22 @@ public class InventoryRepository {
         return mInventoryRepo;
     }
 
-
+    public static void destroyInstance() {
+        mInventoryRepo = null;
+    }
     // Category methods
-    public void addCategory(Categories category) {
+    public String addCategory(Categories category) {
         mInventoryDatabase.addCategoryData(category);
+        return category.getId();
     }
 
     public void deleteCategory(Categories category) {
         mInventoryDatabase.deleteCategoryData(category);
+        mInventoryDatabase.deleteItemsByCategory(category.getId());
     }
 
 
-    public LiveData<List<Categories>> getCategories() {
+    public LiveData<List <Categories>> getCategories() {
         MutableLiveData<List<Categories>> categoriesLiveData = new MutableLiveData<>();
         Cursor cursor = mInventoryDatabase.readAllCategories();
         List<Categories> categoriesList = new ArrayList<>();
@@ -62,6 +67,9 @@ public class InventoryRepository {
         mInventoryDatabase.updateItemData(updatedItem);
     }
 
+    public void deleteItem(Items item) {
+        mInventoryDatabase.deleteItemData(item);
+    }
     public LiveData<List<Items>> getItems(String categoryId) {
         MutableLiveData<List<Items>> itemsLiveData = new MutableLiveData<>();
         Cursor cursor = mInventoryDatabase.readItemsByCategory(categoryId);

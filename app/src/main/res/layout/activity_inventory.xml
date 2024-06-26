@@ -10,8 +10,8 @@
             android:id="@+id/items_recycler"
             android:layout_width="412dp"
             android:layout_height="806dp"
-            tools:layout_editor_absoluteX="-0dp"
-            tools:layout_editor_absoluteY="-0dp" />
+            tools:layout_editor_absoluteX="-1dp"
+            tools:layout_editor_absoluteY="2dp" />
 
         <Button
             android:id="@+id/add_item_button"

@@ -26,7 +26,7 @@ public class ItemListViewModel extends AndroidViewModel {
     public void addItem(Items item) {
         mInvenRepo.addItem(item);
     }
-//    public void deleteItem(Items items) {
-//        mInvenRepo.deleteItem(items);
-//    }
+    public void deleteItem(Items items) {
+        mInvenRepo.deleteItem(items);
+    }
 }

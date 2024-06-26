@@ -23,18 +23,18 @@
             android:exported="false"
             android:launchMode="singleTop"
             android:parentActivityName=".CategoryActivity" />
-<!--        <activity-->
-<!--            android:name=".CategoryActivity"-->
-<!--            android:exported="false"-->
-<!--            android:launchMode="singleTop"-->
-<!--            android:parentActivityName=".LoginActivity" />-->
-<!--        <activity-->
-<!--            android:name=".UserListActivity"-->
-<!--            android:exported="false"-->
-<!--            android:launchMode="singleTop"-->
-<!--            android:parentActivityName=".LoginActivity" />-->
         <activity
             android:name=".CategoryActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName=".LoginActivity" />
+        <activity
+            android:name=".UserListActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:parentActivityName=".LoginActivity" />
+        <activity
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

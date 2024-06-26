@@ -1,39 +1,31 @@
 package com.example.paulkiminventoryapp;
 
 import com.example.paulkiminventoryapp.model.Categories;
-import com.example.paulkiminventoryapp.repo.InventoryDatabase;
-import com.example.paulkiminventoryapp.viewmodel.CategoryListViewModel;
 import com.example.paulkiminventoryapp.repo.InventoryRepository;
+import com.example.paulkiminventoryapp.viewmodel.CategoryListViewModel;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.graphics.Color;
 
-
-public class CategoryActivity extends AppCompatActivity
-        implements CategoryDialogFragment.onCategoryEnteredListener {
+public class CategoryActivity extends AppCompatActivity implements CategoryDialogFragment.onCategoryEnteredListener, CustomCategoryAdapter.CategoryAdapterListener {
 
     private Boolean mLoadCategoryList = true;
-    private CategoryAdapter mCategoryAdapter;
+    private CustomCategoryAdapter mCategoryAdapter;
     private RecyclerView mRecyclerView;
     private int[] mCategoryColors;
     private CategoryListViewModel mCategoryListViewModel;
+    InventoryRepository mInventoryRepository;
     private Categories mSelectedCategory;
     private int mSelectedCategoryPosition = RecyclerView.NO_POSITION;
     private ActionMode mActionMode = null;
@@ -45,9 +37,8 @@ public class CategoryActivity extends AppCompatActivity
 
         mCategoryColors = getResources().getIntArray(R.array.categoryColors);
 
-        findViewById(R.id.add_category_button).setOnClickListener(view -> showCategoryDialog    ());
-
-        // Create 2 grid layout columns
+        findViewById(R.id.add_category_button).setOnClickListener(view -> showCategoryDialog());
+        mInventoryRepository = InventoryRepository.getInstance(getApplicationContext());
         mRecyclerView = findViewById(R.id.category_recycler_view);
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
@@ -62,7 +53,7 @@ public class CategoryActivity extends AppCompatActivity
 
     private void updateUI(List<Categories> categoryList) {
         if (mCategoryAdapter == null) {
-            mCategoryAdapter = new CategoryAdapter(categoryList);
+            mCategoryAdapter = new CustomCategoryAdapter(categoryList, mCategoryColors, this, this, mInventoryRepository);
             mRecyclerView.setAdapter(mCategoryAdapter);
         } else {
             mCategoryAdapter.setCategoryList(categoryList);
@@ -74,124 +65,43 @@ public class CategoryActivity extends AppCompatActivity
     public void onCategoryEntered(String categoryText) {
         if (categoryText.length() > 0) {
             Categories category = new Categories(categoryText);
-
-            // Stop updateUI() from being called
             mLoadCategoryList = false;
 
-            mCategoryListViewModel.addCategory(category);
             mCategoryAdapter.addCategory(category);
+
+            String id = mCategoryListViewModel.addCategory(category);
+            category.setId(String.valueOf(id));
+
             Toast.makeText(this, "Added: " + categoryText, Toast.LENGTH_SHORT).show();
         }
     }
-    // Creates an instance and displays it using FragmentManager
+
     private void showCategoryDialog() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
         CategoryDialogFragment categoryDialogFragment = new CategoryDialogFragment();
-        categoryDialogFragment.show(fragmentManager, "category_dialog");
+        categoryDialogFragment.show(getSupportFragmentManager(), "category_dialog");
     }
 
-    private class CategoryHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnLongClickListener {
-
-        private Categories mCategory;
-        private final TextView mCategoryTextView;
-
-        public CategoryHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.category_view_items, parent, false));
-            itemView.setOnClickListener(this);
-            mCategoryTextView = itemView.findViewById(R.id.category_text_view);
-            itemView.setOnLongClickListener(this);
-        }
-
-        public void bind(Categories category, int position) {
-            mCategory = category;
-            mCategoryTextView.setText(category.getText());
-            if (mSelectedCategoryPosition == position) {
-                // Make selected category stand out
-                mCategoryTextView.setBackgroundColor(Color.RED);
-            } else {
-                // Make the background color dependent on the length of the category string
-                int colorIndex = category.getText().length() % mCategoryColors.length;
-                mCategoryTextView.setBackgroundColor(mCategoryColors[colorIndex]);
-            }
-        }
-
-        @Override
-        public void onClick(View view) {
-            // Start InventoryActivity with the selected category
-            Intent intent = new Intent(CategoryActivity.this, InventoryActivity.class);
-            intent.putExtra(InventoryActivity.EXTRA_CATEGORY_ID, mCategory.getId());
-            intent.putExtra(InventoryActivity.EXTRA_CATEGORY_TEXT, mCategory.getText());
-            startActivity(intent);
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            if (mActionMode != null) {
-                return false;
-            }
-
-            mSelectedCategory = mCategory;
-            mSelectedCategoryPosition = getAdapterPosition();
-
-            // Re-bind the selected item
-            mCategoryAdapter.notifyItemChanged(mSelectedCategoryPosition);
-
-            // Show the CAB
-            mActionMode = startActionMode(mActionModeCallback);
-
-            return true;
-        }
+    @Override
+    public void onCategorySelected(Categories category) {
+        Intent intent = new Intent(CategoryActivity.this, InventoryActivity.class);
+        intent.putExtra(InventoryActivity.EXTRA_CATEGORY_ID, category.getId());
+        intent.putExtra(InventoryActivity.EXTRA_CATEGORY_TEXT, category.getText());
+        startActivity(intent);
     }
 
-    private class CategoryAdapter extends RecyclerView.Adapter<CategoryHolder> {
-
-        private List<Categories> mCategoryList;
-
-        public CategoryAdapter(List<Categories> categoryList) {
-            mCategoryList = categoryList;
+    @Override
+    public void onCategoryLongSelected(Categories category, int position) {
+        if (mActionMode != null) {
+            return;
         }
 
-        @NonNull
-        @Override
-        public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
-            return new CategoryHolder(layoutInflater, parent);
-        }
+        mSelectedCategory = category;
+        mSelectedCategoryPosition = position;
 
-        @Override
-        public void onBindViewHolder(CategoryHolder holder, int position) {
-            Categories category = mCategoryList.get(position);
-            holder.bind(category, position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mCategoryList.size();
-        }
-
-        public void setCategoryList(List<Categories> categoryList) {
-            mCategoryList = categoryList;
-        }
-
-        public void addCategory(Categories category) {
-            mCategoryList.add(category);
-            notifyDataSetChanged();
-            mRecyclerView.scrollToPosition(mCategoryList.size() - 1);
-
-        }
-
-        public void deleteCategory(Categories category) {
-            int index = mCategoryList.indexOf(category);
-            if (index >= 0) {
-                mCategoryList.remove(category);
-                notifyItemRemoved(index);
-            }
-        }
+        mActionMode = startActionMode(mActionModeCallback);
     }
 
     private final ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
-
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             MenuInflater inflater = actionMode.getMenuInflater();
@@ -206,20 +116,21 @@ public class CategoryActivity extends AppCompatActivity
 
         @Override
         public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            if (menuItem.getItemId() == R.id.delete) {
+            if (menuItem.getItemId() == R.id.context_menu_delete) {
                 mCategoryListViewModel.deleteCategory(mSelectedCategory);
                 mCategoryAdapter.deleteCategory(mSelectedCategory);
                 actionMode.finish();
+                Toast.makeText(CategoryActivity.this, "Deleted: " + mSelectedCategory.getText(), Toast.LENGTH_SHORT).show();
                 return true;
             }
+            Toast.makeText(CategoryActivity.this, "Failed to delete " + mSelectedCategory.getText(), Toast.LENGTH_SHORT).show();
             return false;
+
         }
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             mActionMode = null;
-
-            // CAB closing, need to deselect item if not deleted
             mCategoryAdapter.notifyItemChanged(mSelectedCategoryPosition);
             mSelectedCategoryPosition = RecyclerView.NO_POSITION;
         }

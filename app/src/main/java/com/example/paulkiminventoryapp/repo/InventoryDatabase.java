@@ -70,7 +70,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(CategoryTable.COL_NAME, category.getText());
-        db.insert(CategoryTable.TABLE, null, values);
+        long id = db.insert(CategoryTable.TABLE, null, values);
+        category.setId(String.valueOf(id));
         db.close();
     }
 
@@ -107,7 +108,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     public void updateItemData(Items item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(InventoryTable.COL_ID, item.getId());
+        //values.put(InventoryTable.COL_ID, item.getId());
         values.put(InventoryTable.COL_NAME, item.getItemName());
         values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
         values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
@@ -122,10 +123,16 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         db.delete(InventoryTable.TABLE, InventoryTable.COL_ID + " = ?", new String[]{String.valueOf(item.getId())});
         db.close();
     }
-
+    public void deleteItemsByCategory(String categoryId) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(InventoryTable.TABLE, InventoryTable.COL_CATEGORY + " = ?", new String[]{categoryId});
+        db.close();
+    }
     public Cursor readItemsByCategory(String category) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + InventoryTable.TABLE + " WHERE " + InventoryTable.COL_CATEGORY + "=?", new String[]{category});
+        String[] selectionArgs = { category };
+        String query = "SELECT * FROM " + InventoryTable.TABLE + " WHERE " + InventoryTable.COL_CATEGORY + "=?";
+        return db.rawQuery(query, selectionArgs);
     }
 
     public Cursor readAllData(){

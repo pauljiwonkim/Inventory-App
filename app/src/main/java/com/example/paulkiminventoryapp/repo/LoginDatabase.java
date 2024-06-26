@@ -16,6 +16,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "login.db";
     private static final int VERSION = 1;
+
     public LoginDatabase(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
     }
@@ -59,13 +60,13 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return userDataId;
     }
 
-    public Cursor readAllData(){
+    public Cursor readAllData() {
         String query = "SELECT * FROM " + UserDataTable.TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
 
-        if(db != null){
+        if (db != null) {
             cursor = db.rawQuery(query, null);
         }
         return cursor;
@@ -99,7 +100,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
                 UserDataTable.COL_EMAIL
         };
         String selection = UserDataTable.COL_USERNAME + " = ?";
-        String[] selectionArgs = { username };
+        String[] selectionArgs = {username};
 
         Cursor cursor = db.query(
                 UserDataTable.TABLE,
@@ -127,9 +128,9 @@ public class LoginDatabase extends SQLiteOpenHelper {
         ArrayList<String> userList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
-                 UserDataTable.COL_USERNAME,
-                 UserDataTable.COL_PASSWORD,
-                 UserDataTable.COL_EMAIL,};
+                UserDataTable.COL_USERNAME,
+                UserDataTable.COL_PASSWORD,
+                UserDataTable.COL_EMAIL,};
 
         Cursor cursor = db.query(
                 UserDataTable.TABLE,
@@ -150,7 +151,19 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return userList;
     }
 
+    public boolean validateCredentials(String username, String password) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] col = {UserDataTable.COL_ID};
+        String selection = UserDataTable.COL_USERNAME + " = ? AND " + UserDataTable.COL_PASSWORD + " = ?";
+        String[] selectionArgs = {username, password};
 
+        Cursor cursor = db.query(
+                UserDataTable.TABLE, col, selection, selectionArgs,null, null,null);
 
+        boolean isValid = (cursor.getCount() > 0);
+        cursor.close();
+        return isValid;
+
+    }
 }
 

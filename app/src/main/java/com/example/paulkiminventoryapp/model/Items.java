@@ -6,11 +6,12 @@ public class Items {
 
     private String mId;
     private String mItemName;
-    private String mitemCategory;
+    private String mItemCategoryId;
     private String mItemDesc;
     private long mitemQuantity;
     private double mitemPrice;
     private long mUpdateTime;
+    private String mItemCategoryIdText;
 
     public Items() {
         mUpdateTime = System.currentTimeMillis();
@@ -47,12 +48,14 @@ public class Items {
 
 
     public String getCategoryId() {
-        return mitemCategory;
+        return mItemCategoryId;
     }
 
-    public void setCategoryId(String itemCategory) {
-        mitemCategory = itemCategory;
+    public void setCategoryId(String itemCategoryId) {
+        mItemCategoryId = itemCategoryId;
     }
+
+
 
     public long getUpdateTime() {
         return mUpdateTime;

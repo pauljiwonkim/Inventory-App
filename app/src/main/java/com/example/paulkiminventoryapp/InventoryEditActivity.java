@@ -1,5 +1,8 @@
 package com.example.paulkiminventoryapp;
 
+import static com.example.paulkiminventoryapp.InventoryActivity.EXTRA_CATEGORY_ID;
+import static com.example.paulkiminventoryapp.InventoryActivity.EXTRA_CATEGORY_TEXT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,12 +13,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.paulkiminventoryapp.model.Categories;
 import com.example.paulkiminventoryapp.model.Items;
 import com.example.paulkiminventoryapp.repo.InventoryDatabase;
 import com.example.paulkiminventoryapp.viewmodel.ItemDetailViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class InventoryEditActivity extends AppCompatActivity {
+    public static final String EXTRA_CATEGORY_ID = "com.example.paulkiminventoryapp.category_id";
+    public static final String EXTRA_CATEGORY_TEXT = "com.example.paulkiminventoryapp.category_text";
 
     private ItemDetailViewModel mItemDetailViewModel;
     private InventoryDatabase mInventoryDatabase;
@@ -27,7 +33,7 @@ public class InventoryEditActivity extends AppCompatActivity {
     private TextView mItemTextId;
     private FloatingActionButton mSaveButton;
     private Items mItem;
-
+    private Categories mCategories;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,44 +47,55 @@ public class InventoryEditActivity extends AppCompatActivity {
         mItemEditPrice = findViewById(R.id.edit_item_price);
         mSaveButton = findViewById(R.id.save_button);
 
+        mInventoryDatabase = new InventoryDatabase(this);
+
+        Intent intent = getIntent();
+        String categoryId = intent.getStringExtra(EXTRA_CATEGORY_ID);
+        String categoryText = intent.getStringExtra(EXTRA_CATEGORY_TEXT);
+        mCategories = new Categories(categoryText);
+        mCategories.setId(categoryId);
+
         updateUI();
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mItem.setId(mItemTextId.getText().toString());
-                mItem.setItemName(mItemEditName.getText().toString());
-                mItem.setItemDesc(mItemEditDesc.getText().toString());
-                mItem.setItemQuantity(Long.parseLong(mItemEditQuantity.getText().toString()));
-                mItem.setItemPrice(Double.parseDouble(mItemEditPrice.getText().toString()));
-                mInventoryDatabase = new InventoryDatabase(InventoryEditActivity.this);
-
-                // Update the existing item
-                mItem.setId(mItemTextId.getText().toString());
-                mItem.setItemName(mItemEditName.getText().toString());
-                mItem.setItemDesc(mItemEditDesc.getText().toString());
-                mItem.setItemQuantity(Long.parseLong(mItemEditQuantity.getText().toString()));
-                mItem.setItemPrice(Double.parseDouble(mItemEditPrice.getText().toString()));
-
-                mItemDetailViewModel.updateItem(mItem);
-                Toast.makeText(InventoryEditActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                finish();
+                saveItem();
             }
+        });
+    }
+
+    private void saveItem() {
+        mItem.setId(mItemTextId.getText().toString());
+        mItem.setItemName(mItemEditName.getText().toString());
+        mItem.setItemDesc(mItemEditDesc.getText().toString());
+        mItem.setItemQuantity(Long.parseLong(mItemEditQuantity.getText().toString()));
+        mItem.setItemPrice(Double.parseDouble(mItemEditPrice.getText().toString()));
+
+        mItem.setCategoryId(mCategories.getId());
+
+        mItemDetailViewModel.updateItem(mItem);
+        Toast.makeText(InventoryEditActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
 
             //TODO MAKE ACTIONBAR FOR DELETE
 //            public void onLongClick(View v) {
 //            }
-        });
-    }
+
 
     private void updateUI() {
-        if (getIntent().hasExtra("id") && getIntent().hasExtra("name") &&
-                getIntent().hasExtra("desc") && getIntent().hasExtra("quantity") &&
+        if     (getIntent().hasExtra("id") &&
+                getIntent().hasExtra("name") &&
+                getIntent().hasExtra("category") &&
+                getIntent().hasExtra("desc") &&
+                getIntent().hasExtra("quantity") &&
                 getIntent().hasExtra("price")) {
             String id = getIntent().getStringExtra("id");
             String name = getIntent().getStringExtra("name");
+            String category = getIntent().getStringExtra("category");
             String desc = getIntent().getStringExtra("desc");
-
             long quantity;
             double price;
 

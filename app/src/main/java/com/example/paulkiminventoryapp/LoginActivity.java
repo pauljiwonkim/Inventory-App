@@ -117,16 +117,23 @@ public class LoginActivity extends AppCompatActivity implements SignUpDialogFrag
 
         // Displays text when button successfully pressed
         loginButton.setOnClickListener(v -> {
-            tempButtonPress(1);
-            Intent intent = new Intent(LoginActivity.this, CategoryActivity.class);
-            startActivity(intent);
+            String userEnteredUsername = userNameTxt.getText().toString();
+            String userEnteredPassword = passwordTxtField.getText().toString();
+
+            if(mLoginDatabase.validateCredentials(userEnteredUsername, userEnteredPassword)){
+                Toast.makeText(this, "Logged in Successfully!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, CategoryActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         // Displays text when button successfully pressed
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tempButtonPress(2);
                 showSignUpDialog();
             }
         });
@@ -176,15 +183,6 @@ public class LoginActivity extends AppCompatActivity implements SignUpDialogFrag
             if (currentFocus != null) {
                 inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
             }
-        }
-    }
-
-    // Temporary function for buttons
-    public void tempButtonPress(int a) {
-        if (a == 1) {
-            tempTxt.setText("Logged in Successfully!");
-        } else if (a == 2) {
-            tempTxt.setText("Sign Up!");
         }
     }
 }
