@@ -79,6 +79,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         long id = db.insert(CategoryTable.TABLE, null, values);
         category.setId(String.valueOf(id));
         db.close();
+
     }
 
     public void deleteCategoryData(Categories category) {
