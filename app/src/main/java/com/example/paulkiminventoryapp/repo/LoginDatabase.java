@@ -29,10 +29,9 @@ public class LoginDatabase extends SQLiteOpenHelper {
         private static final String COL_PASSWORD = "password";
 
         private static final String COL_EMAIL = "email";
-
-        // private static final String COL_DATE_CREATED = "date_created";
     }
 
+    //Create Database
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table " + UserDataTable.TABLE + " (" +
@@ -49,6 +48,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //Insert Data
     public long addUserData(String userName, String userPassword, String userEmail) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -60,6 +60,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return userDataId;
     }
 
+    //Read Data
     public Cursor readAllData() {
         String query = "SELECT * FROM " + UserDataTable.TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -72,6 +73,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return cursor;
     }
 
+    //Update Data
     public boolean updateUserData(String userName, String userPassword, String userEmail) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -91,7 +93,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return rowsUpdated > 0;
     }
 
-    // Method to retrieve user details based on username
+    // Retrieve user data based on username
     public User getUserByUsername(String username) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {

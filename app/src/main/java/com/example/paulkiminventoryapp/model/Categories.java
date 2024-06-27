@@ -26,12 +26,5 @@ public class Categories {
         return mText;
     }
 
-    public long getUpdateTime() {
-        return mUpdateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        mUpdateTime = updateTime;
-
     }
 }

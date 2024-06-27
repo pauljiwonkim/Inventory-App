@@ -1,5 +1,7 @@
 package com.example.paulkiminventoryapp;
 
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,7 +15,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.paulkiminventoryapp.repo.LoginDatabase;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
@@ -23,7 +29,7 @@ import java.util.ArrayList;
 
 // Activity for user User
 public class LoginActivity extends AppCompatActivity implements SignUpDialogFragment.OnUserEnteredListener{
-
+    private final int REQUEST_SMS_CODE = 0;
     EditText userNameTxt;
     EditText passwordTxtField;
     Button loginButton;
@@ -137,7 +143,9 @@ public class LoginActivity extends AppCompatActivity implements SignUpDialogFrag
                 showSignUpDialog();
             }
         });
-
+//        if (!hasPermissions()) {
+//            requestSMSPermission();
+//        }
     }
 
     // Creates an instance and displays it using FragmentManager
@@ -185,4 +193,45 @@ public class LoginActivity extends AppCompatActivity implements SignUpDialogFrag
             }
         }
     }
+
+    // TODO Finish Below
+//    // Check if SMS permission is granted
+//    private boolean hasPermissions() {
+//        String smsPermission = Manifest.permission.SEND_SMS;
+//        if (ContextCompat.checkSelfPermission(this, smsPermission)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, smsPermission )) {
+//                showPermissionRationaleDialog(smsPermission);
+//            } else {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[] { smsPermission }, REQUEST_SMS_CODE);
+//            }
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//
+//    // Show rationale dialog for SMS permission
+//    private void showPermissionRationaleDialog(String permission) {
+//        new AlertDialog.Builder(this)
+//                .setTitle("SMS Permission Required")
+//                .setMessage("Permission is required to send SMS notifications.")
+//                .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        ActivityCompat.requestPermissions(LoginActivity.this, new String[]{permission}, REQUEST_SMS_CODE);
+//                    }
+//                })
+//                .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        Toast.makeText(LoginActivity.this, "SMS permission denied.", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .create()
+//                .show();
+//    }
 }
+
+

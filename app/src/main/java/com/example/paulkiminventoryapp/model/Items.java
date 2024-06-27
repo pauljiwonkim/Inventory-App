@@ -10,12 +10,7 @@ public class Items {
     private String mItemDesc;
     private long mitemQuantity;
     private double mitemPrice;
-    private long mUpdateTime;
     private String mItemCategoryIdText;
-
-    public Items() {
-        mUpdateTime = System.currentTimeMillis();
-    }
 
     // Default constructor
     public Items(String id, String mItemName, String mItemDesc, long mitemQuantity, double mitemPrice) {
@@ -53,16 +48,6 @@ public class Items {
 
     public void setCategoryId(String itemCategoryId) {
         mItemCategoryId = itemCategoryId;
-    }
-
-
-
-    public long getUpdateTime() {
-        return mUpdateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
-        mUpdateTime = updateTime;
     }
 
 }

@@ -29,9 +29,6 @@ public class InventoryRepository {
         return mInventoryRepo;
     }
 
-    public static void destroyInstance() {
-        mInventoryRepo = null;
-    }
     // Category methods
     public String addCategory(Categories category) {
         mInventoryDatabase.addCategoryData(category);
@@ -91,8 +88,11 @@ public class InventoryRepository {
     }
 
     public LiveData<Items> getItem(String itemId) {
+        // Get the item from the database
         MutableLiveData<Items> itemLiveData = new MutableLiveData<>();
         Cursor cursor = mInventoryDatabase.readAllData();
+
+        // Iterate through cursor to find the item with the given ID
         while (cursor.moveToNext()) {
             if (cursor.getString(cursor.getColumnIndexOrThrow("_id")).equals(itemId)) {
                 Items item = new Items(
@@ -102,6 +102,7 @@ public class InventoryRepository {
                         cursor.getLong(cursor.getColumnIndexOrThrow("quantity")),
                         cursor.getDouble(cursor.getColumnIndexOrThrow("price"))
                 );
+                // Set the category ID and LiveData value of the item
                 item.setCategoryId(cursor.getString(cursor.getColumnIndexOrThrow("category")));
                 itemLiveData.setValue(item);
                 break;

@@ -40,9 +40,12 @@ public class CategoryActivity extends AppCompatActivity implements CategoryDialo
         findViewById(R.id.add_category_button).setOnClickListener(view -> showCategoryDialog());
         mInventoryRepository = InventoryRepository.getInstance(getApplicationContext());
         mRecyclerView = findViewById(R.id.category_recycler_view);
+
+        // Set up the RecyclerView and create grid layout manager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
+        // Observe the LiveData from the ViewModel
         mCategoryListViewModel = new ViewModelProvider(this).get(CategoryListViewModel.class);
         mCategoryListViewModel.getCategories().observe(this, categories -> {
             if (mLoadCategoryList) {

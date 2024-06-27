@@ -15,12 +15,15 @@ public class InventoryDatabase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "inventory.db";
     private static final int VERSION = 1;
-    private Context context;
+    private final Context context;
+
+    // Constructor
     public InventoryDatabase(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
         this.context = context;
     }
 
+    // Category Table
     private static final class CategoryTable{
         private static final String TABLE = "Category";
         private static final String COL_ID = "_id";
@@ -28,7 +31,7 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
 
 
-    // TODO ADD ITEM DESC, QUANTITY, AND PRICE TOO
+    // Items Table
     private static final class InventoryTable {
         private static final String TAG = "InventoryDatabase";
         private static final String TABLE = "Items";
@@ -43,6 +46,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create tables
+
         db.execSQL("create table " + InventoryTable.TABLE + " (" +
                 InventoryTable.COL_ID + " integer primary key autoincrement, " +
                 InventoryTable.COL_NAME + " text, " +
@@ -65,7 +70,8 @@ public class InventoryDatabase extends SQLiteOpenHelper {
     }
 
 
-    //Categories
+    //Categories Functions
+
     public void addCategoryData(Categories category) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -86,11 +92,10 @@ public class InventoryDatabase extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + CategoryTable.TABLE, null);
     }
 
-// Items
+// Items Functions
     public void addItemData(Items item) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
-        //values.put(InventoryTable.COL_ID, item.getId());
         values.put(InventoryTable.COL_NAME, item.getItemName());
         values.put(InventoryTable.COL_CATEGORY, item.getCategoryId());
         values.put(InventoryTable.COL_DESCRIPTION, item.getItemDesc());
