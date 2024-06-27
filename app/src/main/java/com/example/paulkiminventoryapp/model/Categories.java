@@ -6,12 +6,9 @@ public class Categories {
 
     private String mCategoryId;
     private String mText;
-    private long mUpdateTime;
-
 
     public Categories(@NonNull String text) {
         mText = text;
-        mUpdateTime = System.currentTimeMillis();
     }
 
     public void setId(String id) {
@@ -27,4 +24,3 @@ public class Categories {
     }
 
     }
-}

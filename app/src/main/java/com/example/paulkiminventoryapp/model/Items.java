@@ -19,7 +19,6 @@ public class Items {
         this.mItemDesc = mItemDesc;
         this.mitemQuantity = mitemQuantity;
         this.mitemPrice = mitemPrice;
-        mUpdateTime = System.currentTimeMillis();
     }
 
     public String getId() {

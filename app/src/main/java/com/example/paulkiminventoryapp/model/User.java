@@ -14,7 +14,6 @@ public class User {
         this.mUserName = mUserName;
         this.mUserPassword = mUserPassword;
         this.mUserEmail = mUserEmail;
-        mUpdateTime = System.currentTimeMillis();
     }
 
     public String getId() { return mId;}
