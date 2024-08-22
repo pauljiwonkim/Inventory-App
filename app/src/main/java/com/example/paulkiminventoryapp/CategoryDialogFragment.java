@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 public class CategoryDialogFragment extends DialogFragment {
 
     public interface onCategoryEnteredListener {
-        void onCategoryEntered(String subjectText);
+        void onCategoryEntered(String category);
     }
 
     private onCategoryEnteredListener mListener;

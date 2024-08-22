@@ -1,17 +1,14 @@
 package com.example.paulkiminventoryapp.viewmodel;
 
 import android.app.Application;
-import android.widget.Toast;
 
 import androidx.lifecycle.AndroidViewModel;
 import com.example.paulkiminventoryapp.model.Categories;
 import com.example.paulkiminventoryapp.repo.InventoryRepository;
 import java.util.List;
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 public class CategoryListViewModel extends AndroidViewModel{
-    private InventoryRepository mInvenRepo;
+    private final InventoryRepository mInvenRepo;
     public CategoryListViewModel(Application application) {
         super(application);
         mInvenRepo = InventoryRepository.getInstance(application.getApplicationContext());

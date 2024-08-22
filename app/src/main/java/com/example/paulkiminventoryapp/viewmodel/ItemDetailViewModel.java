@@ -1,7 +1,5 @@
 package com.example.paulkiminventoryapp.viewmodel;
 
-import static java.lang.Long.valueOf;
-
 import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -11,7 +9,6 @@ import androidx.lifecycle.Transformations;
 import com.example.paulkiminventoryapp.model.Items;
 import com.example.paulkiminventoryapp.repo.InventoryRepository;
 
-import java.util.List;
 
 public class ItemDetailViewModel extends AndroidViewModel {
 

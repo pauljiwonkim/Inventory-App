@@ -30,11 +30,13 @@ public class InventoryRepository {
     }
 
     // Category methods
-    public String addCategory(Categories category) {
+
+    // Add a category to the database
+    public void addCategory(Categories category) {
         mInventoryDatabase.addCategoryData(category);
-        return category.getId();
     }
 
+    // Delete a category from the database
     public void deleteCategory(Categories category) {
         mInventoryDatabase.deleteCategoryData(category);
         mInventoryDatabase.deleteItemsByCategory(category.getId());
@@ -56,14 +58,18 @@ public class InventoryRepository {
     }
 
     // Item methods
+
+    // Add an item to the database
     public void addItem(Items item) {
         mInventoryDatabase.addItemData(item);
     }
 
+    // Update an item in the database
     public void updateItem(Items updatedItem) {
         mInventoryDatabase.updateItemData(updatedItem);
     }
 
+    // Delete an item from the database
     public void deleteItem(Items item) {
         mInventoryDatabase.deleteItemData(item);
     }
@@ -87,6 +93,8 @@ public class InventoryRepository {
         return itemsLiveData;
     }
 
+
+    // Get an item from the database
     public LiveData<Items> getItem(String itemId) {
         // Get the item from the database
         MutableLiveData<Items> itemLiveData = new MutableLiveData<>();

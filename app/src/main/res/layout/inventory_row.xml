@@ -2,116 +2,135 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:id="@+id/item_layout">
 
     <androidx.gridlayout.widget.GridLayout
-        android:layout_width="397dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
         app:columnCount="5"
-        app:rowCount="2">
+        app:rowCount="2"
+        android:layout_gravity="center">
 
         <!-- Titles -->
-
         <TextView
             android:id="@+id/item_id_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:text="Item ID"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="0"
-            app:layout_row="0" />
+            app:layout_row="0"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_name_title"
-            android:layout_width="94dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:text="Item Name"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="1"
-            app:layout_row="0" />
+            app:layout_row="0"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_desc_title"
-            android:layout_width="110dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:text="Item Description"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="2"
-            app:layout_row="0" />
+            app:layout_row="0"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_quantity_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:text="Item Quantity"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="3"
-            app:layout_row="0" />
+            app:layout_row="0"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_price_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:text="Item Price"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="4"
-            app:layout_row="0" />
+            app:layout_row="0"
+            app:layout_columnWeight="1" />
 
         <!-- Values -->
         <TextView
             android:id="@+id/item_id_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="0"
-            app:layout_row="1" />
+            app:layout_row="1"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_name_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="1"
-            app:layout_row="1" />
+            app:layout_row="1"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_desc_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="2"
-            app:layout_row="1" />
+            app:layout_row="1"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_quantity_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="3"
-            app:layout_row="1" />
+            app:layout_row="1"
+            app:layout_columnWeight="1" />
 
         <TextView
             android:id="@+id/item_price_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:padding="4dp"
             android:textSize="12sp"
+            android:gravity="center"
             app:layout_column="4"
-            app:layout_row="1" />
-
+            app:layout_row="1"
+            app:layout_columnWeight="1" />
 
     </androidx.gridlayout.widget.GridLayout>
 

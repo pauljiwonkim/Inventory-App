@@ -56,8 +56,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         values.put(UserDataTable.COL_USERNAME, userName);
         values.put(UserDataTable.COL_PASSWORD, userPassword);
         values.put(UserDataTable.COL_EMAIL, userEmail);
-        long userDataId = db.insert(UserDataTable.TABLE, null, values);
-        return userDataId;
+        return db.insert(UserDataTable.TABLE, null, values);
     }
 
     //Read Data
@@ -78,8 +77,8 @@ public class LoginDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(UserDataTable.COL_USERNAME, userName);
-        values.put(UserDataTable.COL_PASSWORD, userPassword); // Update password if needed
-        values.put(UserDataTable.COL_EMAIL, userEmail); // Update email if needed
+        values.put(UserDataTable.COL_PASSWORD, userPassword);
+        values.put(UserDataTable.COL_EMAIL, userEmail);
 
         // Specify which row to update based on userName
         int rowsUpdated = db.update(
@@ -93,7 +92,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return rowsUpdated > 0;
     }
 
-    // Retrieve user data based on username
+    // Retrieve user data based on username.
     public User getUserByUsername(String username) {
         SQLiteDatabase db = getReadableDatabase();
         String[] projection = {
@@ -104,6 +103,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         String selection = UserDataTable.COL_USERNAME + " = ?";
         String[] selectionArgs = {username};
 
+        // Retrieve user data from the database using the cursor
         Cursor cursor = db.query(
                 UserDataTable.TABLE,
                 projection,
@@ -125,7 +125,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return user;
     }
 
-    //query database
+    // Gets all Users from database
     public ArrayList<String> getAllUsers() {
         ArrayList<String> userList = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -153,6 +153,7 @@ public class LoginDatabase extends SQLiteOpenHelper {
         return userList;
     }
 
+    // Validate credentials
     public boolean validateCredentials(String username, String password) {
         SQLiteDatabase db = getReadableDatabase();
         String[] col = {UserDataTable.COL_ID};

@@ -55,6 +55,29 @@
     <string name="add_item_category">Item Category</string>
     <string name="edit_item_category">Item Category</string>
     <string name="edit_item_id">Item ID</string>
+    <string name="sms_title">SMS Permissions</string>
+    <string name="sms_allow">Allow</string>
+    <string name="sms_deny">Deny</string>
+    <string name="login_channel_name">Login</string>
+    <string name="login_channel_description">Login Notification</string>
+    <string name="signup_channel_name">Signup</string>
+    <string name="signup_channel_description">Signup Notification</string>
+    <string name="category_channel_name">Category</string>
+    <string name="category_channel_description">Category Notification</string>
+    <string name="deleteCategory_channel_name">Category</string>
+    <string name="deleteCategory_channel_description">Category Notification</string>
+    <string name="item_channel_name">Item</string>
+    <string name="item_channel_description">Item Notification</string>
+    <string name="addItem_channel_name">Item</string>
+    <string name="addItem_channel_description">Item Notification</string>
+    <string name="deleteItem_channel_name">Item</string>
+    <string name="deleteItem_channel_description">Item Notification</string>
+    <string name="updateItem_channel_name">Item</string>
+    <string name="updateItem_channel_description">Item Notification</string>
+    <string name="item_search_hint">Search Item</string>
+    <string name="sort_alphabetically">Sort Alphabetically</string>
+
+
 
 
 </resources>
