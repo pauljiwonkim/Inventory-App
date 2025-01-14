@@ -1,5 +1,5 @@
-# InvenTrack - Inventory Management Android Mobile App
-# CS360 Mobile Architect & Programming
+# InvenTrack - Inventory Management Android Mobile App  
+# CS360 Mobile Architect & Programming Project
 
 **InvenTrack** is a mobile application developed to track and manage items in a warehouse utilizing SQLite for its database. Designed with Android devices in mind, the app provides real-time inventory visibility and helps streamline warehouse logistics. 
 
